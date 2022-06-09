@@ -8,113 +8,137 @@ public class RadioTest {
     Radio radio = new Radio();
 
     @Test
-    void shouldChangeStation() {
-        assertEquals(0, radio.getCurrentRadioStation());
-        radio.setCurrentStation(5);
-        assertEquals(5, radio.getCurrentRadioStation());
-    }
-
-    @Test
-    void shouldSetStationUnderMinStation() {
-        radio.setCurrentStation(-1);
+    public void shouldGetCurrentRadioStation() {
+        radio.setCurrentRadioStation(0);
+        radio.setCurrentRadioStation(-1);
+        radio.setCurrentRadioStation(11);
         assertEquals(0, radio.getCurrentRadioStation());
     }
 
     @Test
-    void shouldSetStationOverMaxStation() {
-        radio.setCurrentStation(10);
+    public void shouldPressNextStation() {
+        radio.setCurrentRadioStation(0);
+        radio.pressNextStation();
+        assertEquals(1, radio.getCurrentRadioStation());
+
+        radio.setCurrentRadioStation(10);
+        radio.pressNextStation();
         assertEquals(0, radio.getCurrentRadioStation());
-    }
 
-    @Test
-    void shouldNextStation() {
-        radio.setCurrentStation(6);
-        radio.nextStation();
-        assertEquals(7, radio.getCurrentRadioStation());
-    }
-
-    @Test
-    void shouldOverMaxStation1() {
-        radio.setCurrentStation(9);
-        radio.nextStation();
+        radio.setCurrentRadioStation(-1);
+        radio.pressNextStation();
         assertEquals(0, radio.getCurrentRadioStation());
-    }
 
-    @Test
-    void shouldOverMaxStation2() {
-        radio.setCurrentStation(10);
-        radio.nextStation();
+        radio.setCurrentRadioStation(11);
+        radio.pressNextStation();
         assertEquals(1, radio.getCurrentRadioStation());
     }
 
     @Test
-    void shouldPrevStation() {
-        radio.setCurrentStation(4);
-        radio.previousStation();
-        assertEquals(3, radio.getCurrentRadioStation());
-    }
+    public void shouldPressPrevStation() {
+        radio.setCurrentRadioStation(0);
+        radio.pressPrevStation();
+        assertEquals(10, radio.getCurrentRadioStation());
 
-    @Test
-    void shouldBelowMinStation1() {
-        radio.setCurrentStation(0);
-        radio.previousStation();
+        radio.setCurrentRadioStation(10);
+        radio.pressPrevStation();
         assertEquals(9, radio.getCurrentRadioStation());
     }
 
     @Test
-    void shouldBelowMinStation2() {
-        radio.setCurrentStation(-1);
-        radio.previousStation();
-        assertEquals(9, radio.getCurrentRadioStation());
+    public void shouldGetToMaxStation() {
+        assertEquals(10, radio.getMaxStation());
     }
 
     @Test
-    void shouldChangeVolume() {
+    public void shouldSetMaxStation() {
+        radio.setMaxStation(-1);
+        radio.setMaxStation(0);
+        radio.setMaxStation(11);
+        assertEquals(11, radio.getMaxStation());
+    }
+
+    @Test
+    public void shouldGetToMinStation() {
+        assertEquals(0, radio.getMinStation());
+    }
+
+    @Test
+    public void shouldSetMinStation() {
+        radio.setMinStation(-1);
+        radio.setMinStation(0);
+        radio.setMinStation(11);
+        assertEquals(11, radio.getMinStation());
+    }
+
+    //тестируем громкость
+    @Test
+    public void shouldSetCurrentVolume() {
+        radio.setCurrentVolume(101);
         assertEquals(0, radio.getCurrentVolume());
-        radio.setCurrentVolume(5);
-        assertEquals(5, radio.getCurrentVolume());
-    }
 
-    @Test
-    void shouldIncreaseVolume() {
-        radio.setCurrentVolume(9);
-        radio.increaseVolume();
-        assertEquals(10, radio.getCurrentVolume());
-    }
-
-    @Test
-    void shouldOverMaxVolume1() {
-        radio.setCurrentVolume(10);
-        radio.increaseVolume();
-        assertEquals(10, radio.getCurrentVolume());
-    }
-
-    @Test
-    void shouldOverMaxVolume2() {
-        radio.setCurrentVolume(11);
-        radio.increaseVolume();
-        assertEquals(1, radio.getCurrentVolume());
-    }
-
-    @Test
-    void shouldDecreaseVolume() {
-        radio.setCurrentVolume(6);
-        radio.decreaseVolume();
-        assertEquals(5, radio.getCurrentVolume());
-    }
-
-    @Test
-    void shouldBelowMinVolume1() {
-        radio.setCurrentVolume(0);
-        radio.decreaseVolume();
-        assertEquals(0, radio.getCurrentVolume());
-    }
-
-    @Test
-    void shouldBelowMinVolume2() {
         radio.setCurrentVolume(-1);
-        radio.decreaseVolume();
+        assertEquals(100, radio.getCurrentVolume());
+
+        radio.setCurrentVolume(8);
+        assertEquals(8, radio.getCurrentVolume());
+    }
+
+    @Test
+    public void shouldGetMinVolume() {
+        assertEquals(0, radio.getMinVolume());
+    }
+
+    @Test
+    public void shouldGetMaxVolume() {
+        assertEquals(100, radio.getMaxVolume());
+    }
+
+    @Test
+    public void shouldSetMinVolume() {
+        radio.setMaxVolume(100);
+        radio.setMinVolume(1);
+        assertEquals(1, radio.getMinVolume());
+    }
+
+    @Test
+    public void shouldSetMaxVolume() {
+        radio.setMinVolume(1);
+        radio.setMaxVolume(101);
+        assertEquals(101, radio.getMaxVolume());
+    }
+
+    @Test
+    public void shouldPressVolumeUp() {
+        radio.setCurrentVolume(4);
+        radio.pressVolumeUp();
+        assertEquals(5, radio.getCurrentVolume());
+
+        radio.setCurrentVolume(100);
+        radio.pressVolumeUp();
         assertEquals(0, radio.getCurrentVolume());
     }
 
+    @Test
+    public void shouldPressVolumeDown() {
+        radio.setCurrentVolume(4);
+        radio.pressVolumeDown();
+        assertEquals(3, radio.getCurrentVolume());
+
+        radio.setCurrentVolume(0);
+        radio.pressVolumeDown();
+        assertEquals(100, radio.getCurrentVolume());
+    }
+
+    @Test
+    public void shouldCreateStationsWithLimits() {
+        Radio radio = new Radio(1);
+        assertEquals(0, radio.getMaxStation());
+
+        Radio radio1 = new Radio(100);
+        assertEquals(99, radio1.getMaxStation());
+
+        Radio radio2 = new Radio(10);
+        assertEquals(0, radio2.getMinStation());
+    }
 }
